@@ -3,15 +3,27 @@ import {CreepStateSupervisor} from '../creeps/state-supervisor';
 
 export class RoomStats {
 
+    private readonly _baseTextStyle: TextStyle = {
+        align: 'left',
+        color: '#000',
+        backgroundColor: 'rgba(255,255,255,0.5)'
+    };
+
     constructor(
         private _room: Room
     ) {
         this._getCreepRoleStats();
+        this._getEnergyStats();
     }
 
     private _getEnergyStats() {
-        const spawnEnergy = 0;
-        const storedEnergy = 0;
+        const availableCreepEnergy = this._room.energyAvailable;
+        const availableCreepEnergyLimit = this._room.energyCapacityAvailable;
+        const text = `${availableCreepEnergy}/${availableCreepEnergyLimit} - ENERGY AVAILABLE`;
+        const y = 8;
+        const x = 2;
+
+        new RoomVisual(this._room.name).text(text, x, y, this._baseTextStyle);
     }
 
     private _getCreepRoleStats() {
@@ -21,13 +33,8 @@ export class RoomStats {
 
         CREEP_ROLES.forEach(role => {
             const text = `${stateSupervisor.getRoleCount(role)}/${CREEP_CONFIGS[role].limit} - ${role}`;
-            const textStyle: TextStyle = {
-                align: 'left',
-                color: '#000',
-                backgroundColor: 'rgba(255,255,255,0.5)'
-            };
 
-            new RoomVisual(this._room.name).text(text, x, y, textStyle);
+            new RoomVisual(this._room.name).text(text, x, y, this._baseTextStyle);
             y += 1.5;
         });
     }
