@@ -28,6 +28,7 @@ export class Harvester extends CreepImpl {
         let source = null;
 
         if (!!this._sourceId) {
+            console.log(this._sourceId);
             source = this._getRoomSources().find(source => source.id === this._sourceId) || null;
         } else {
             source = this._selectSourceFromSourceDistribution();
@@ -64,7 +65,7 @@ export class Harvester extends CreepImpl {
         }
 
         if (!!resultSource) {
-            this._getCreepMemory().sourceid = resultSource.id;
+            this._getCreepMemory().sourceId = resultSource.id;
             sourceDistribution[resultSource.id] += 1;
             this._setRoomSourceDistribution(sourceDistribution);
         }
