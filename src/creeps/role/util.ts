@@ -10,12 +10,39 @@ export class CreepUtils {
         const nearestResource = CreepUtils.getNearestAvailableEnergy(creep);
 
         if (!!nearestResource) {
-            if((nearestResource as Structure).structureType === 'container') {
+            if ((nearestResource as Structure).structureType === 'container') {
                 CreepUtils.withdrawEnergy(creep, nearestResource as Structure<STRUCTURE_STORAGE>);
             } else {
                 CreepUtils.pickUpEnergy(creep, nearestResource as Resource<RESOURCE_ENERGY>);
             }
         }
+    }
+
+    public static getWeight(creep: Creep): number {
+        let usedCarryParts = !!creep.store && creep.store.energy ?
+            Math.ceil(creep.store.energy / 50) :
+            0;
+        let weight = 0;
+
+        creep.body.forEach(part => {
+            switch (part.type) {
+                case 'work':
+                case 'attack':
+                case 'ranged_attack':
+                case 'heal':
+                case 'tough':
+                case 'claim':
+                    weight += 1;
+                    break;
+                case 'carry':
+                    if (usedCarryParts > 0) {
+                        weight += 1;
+                        usedCarryParts--;
+                    }
+            }
+        });
+
+        return weight;
     }
 
     public static getNearestDroppedEnergy(creep: Creep) {
