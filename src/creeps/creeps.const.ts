@@ -2,23 +2,23 @@ export type CreepRoleConfig = {limit: number, parts: BodyPartConstant[], priorit
 
 export const CREEP_CONFIGS: {[roleName: string]: CreepRoleConfig} = {
     HARVESTER: {
-        limit: 3,
-        parts: [WORK, WORK, MOVE],
+        limit: 6,
+        parts: [WORK, WORK, WORK, WORK, MOVE],
         priority: 0
     },
     TRANSPORTER: {
         limit: 3,
-        parts: [CARRY, CARRY, MOVE],
+        parts: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
         priority: 1
     },
     UPGRADER: {
-        limit: 1,
-        parts: [WORK, CARRY, MOVE],
+        limit: 4,
+        parts: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
         priority: 2
     },
     BUILDER: {
-        limit: 2,
-        parts: [WORK, CARRY, MOVE],
+        limit: 3,
+        parts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
         priority: 2
     }
 };
