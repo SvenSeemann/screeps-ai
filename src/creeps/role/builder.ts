@@ -1,3 +1,4 @@
+import {StructureUtil} from '../../structures/util';
 import {CreepImpl} from './creep-impl';
 import {CreepUtils} from './util';
 
@@ -67,9 +68,7 @@ export class Builder extends CreepImpl {
 
     public getRepairTarget() {
         //TODO: sort repair targets by prio
-        return this._creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-        });
+        return StructureUtil.getClosestDamagedStructure(this._creep.pos);
     }
 
     public repair() {
