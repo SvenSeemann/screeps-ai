@@ -4,7 +4,6 @@ export class CreepStateSupervisor {
 
     public run() {
         this.creepState();
-        this.logCreepState();
     }
 
     public getRolesGroupedByPriority() {
@@ -88,18 +87,5 @@ export class CreepStateSupervisor {
 
     public getRoleCount(roleName: string) {
         return _.filter(Game.creeps, creep => (creep.memory as any).role === roleName).length;
-    }
-
-    public logCreepState() {
-        let msg = '';
-
-        for(let role of CREEP_ROLES) {
-            const roleCount = this.getRoleCount(role);
-            const roleLimit = CREEP_CONFIGS[role].limit;
-            msg += `${role}: ${roleCount}/${roleLimit}\n`
-
-        }
-
-        console.log(msg);
     }
 }
