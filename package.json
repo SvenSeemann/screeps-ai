@@ -10,7 +10,7 @@
     "test": "npm run test-unit",
     "test-unit": "mocha test/unit/**/*.ts",
     "test-integration": "echo 'See docs/in-depth/testing.md for instructions on enabling integration tests'",
-    "watch-pserver": "rollup -cw --environment DEST:pserver",
+    "watch-pserver": "rollup -cw --environment DEST:pserver"
   },
   "repository": {
     "type": "git",
