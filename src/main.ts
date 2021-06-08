@@ -4,13 +4,14 @@ import {RoomStats} from './stats/room-stats';
 import {TowerHandler} from './structures/tower-handler';
 
 export const loop = ErrorMapper.wrapLoop(() => {
-  new CreepSupervisor().run();
-
   const rooms = Game.rooms;
   const roomNames = Object.keys(rooms);
 
   roomNames.forEach(roomName => {
-    new TowerHandler(rooms[roomName]);
-    new RoomStats(rooms[roomName]);
+    const room = rooms[roomName];
+
+    new CreepSupervisor().run(room);
+    new TowerHandler(room);
+    new RoomStats(room);
   });
 });
