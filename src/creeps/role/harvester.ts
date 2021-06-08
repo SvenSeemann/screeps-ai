@@ -8,6 +8,10 @@ export class Harvester extends CreepImpl {
 
     private static _sourcesMemoryKey = 'sources';
 
+    public static onDeath(room: Room, creepMemory: any) {
+        (room.memory as any)[Harvester._sourcesMemoryKey][creepMemory.sourceId]--;
+    }
+
     private readonly _sourceId: string;
 
     constructor(creep: Creep) {
@@ -28,7 +32,6 @@ export class Harvester extends CreepImpl {
         let source = null;
 
         if (!!this._sourceId) {
-            console.log(this._sourceId);
             source = this._getRoomSources().find(source => source.id === this._sourceId) || null;
         } else {
             source = this._selectSourceFromSourceDistribution();

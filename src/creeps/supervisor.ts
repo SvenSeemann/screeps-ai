@@ -18,17 +18,25 @@ export class CreepSupervisor {
     constructor() {
     }
 
-    public run() {
-        this.creepGarbageCollector();
+    public run(room: Room) {
+        this.creepGarbageCollector(room);
         this._stateSupervisor.run();
         this.creepRunner();
     }
 
-    public creepGarbageCollector() {
-        for(let name in Memory.creeps) {
-            if(!Game.creeps[name]) {
+    public creepGarbageCollector(room: Room) {
+        for (let name in Memory.creeps) {
+            if (!Game.creeps[name]) {
+                const cache: any = Memory.creeps[name];
+
                 delete Memory.creeps[name];
                 console.log('Clearing non-existing creep memory:', name);
+
+                switch (cache.role) {
+                    case CREEP_HARVESTER_ROLE_NAME:
+                        Harvester.onDeath(room, cache);
+                        break;
+                }
             }
         }
     }
