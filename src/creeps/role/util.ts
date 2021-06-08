@@ -1,5 +1,46 @@
 export class CreepUtils {
 
+    /*public static getAvailableCreepEnergy(room: Room) {
+        const availableEnergyStructures = CreepUtils.getCreepEnergyStructures(room);
+
+        return availableEnergyStructures.reduce(
+            (previousValue, currentValue) => {
+                console.log(JSON.stringify(currentValue))
+                previousValue += currentValue.store.getUsedCapacity() || 0;
+
+                return previousValue;
+            },
+            0
+        )
+    }
+
+    public static getAvailableCreepEnergyLimit(room: Room) {
+        const availableEnergyStructures = CreepUtils.getCreepEnergyStructures(room);
+
+        return availableEnergyStructures.reduce(
+            (previousValue, currentValue) => {
+                previousValue += currentValue.store.getUsedCapacity() || 0;
+
+                return previousValue;
+            },
+            0
+        )
+    }
+
+    public static getCreepEnergyStructures(room: Room): (StructureSpawn | StructureExtension)[] {
+        const availableEnergyStructuresOptions: StructureConstant[] = [
+            STRUCTURE_SPAWN,
+            STRUCTURE_EXTENSION
+        ];
+
+        return room
+            .find(FIND_STRUCTURES, {
+                filter: (structure: StructureStorage) => {
+                    return availableEnergyStructuresOptions.indexOf(structure.structureType) > -1;
+                }
+            }) as (StructureSpawn | StructureExtension)[];
+    }*/
+
     public static pickUpDroppedResources(creep: Creep) {
         const nearestResource = CreepUtils.getNearestDroppedEnergy(creep);
 
@@ -10,7 +51,10 @@ export class CreepUtils {
         const nearestResource = CreepUtils.getNearestAvailableEnergy(creep);
 
         if (!!nearestResource) {
-            if ((nearestResource as Structure).structureType === 'container') {
+            if (
+                (nearestResource as Structure).structureType === 'container' ||
+                (nearestResource as Structure).structureType === 'storage'
+            ) {
                 CreepUtils.withdrawEnergy(creep, nearestResource as Structure<STRUCTURE_STORAGE>);
             } else {
                 CreepUtils.pickUpEnergy(creep, nearestResource as Resource<RESOURCE_ENERGY>);
@@ -51,10 +95,13 @@ export class CreepUtils {
         return creep.pos.findClosestByPath(sources);
     }
 
-    public static getNearestContainer(creep: Creep) {
+    public static getNearestStore(creep: Creep) {
         const containers = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType == STRUCTURE_CONTAINER &&
+                return (
+                        structure.structureType == STRUCTURE_CONTAINER ||
+                        structure.structureType == STRUCTURE_STORAGE
+                    ) &&
                     structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
             }
         });
@@ -64,14 +111,14 @@ export class CreepUtils {
 
     public static getNearestAvailableEnergy(creep: Creep): Resource<RESOURCE_ENERGY> | Structure<STRUCTURE_STORAGE> {
         const nearestDroppedEnergy = CreepUtils.getNearestDroppedEnergy(creep);
-        const nearestContainer = CreepUtils.getNearestContainer(creep);
+        const nearestContainer = CreepUtils.getNearestStore(creep);
         const targets = [];
 
-        if(!!nearestDroppedEnergy) {
+        if (!!nearestDroppedEnergy) {
             targets.push(nearestDroppedEnergy);
         }
 
-        if(!!nearestContainer) {
+        if (!!nearestContainer) {
             targets.push(nearestContainer);
         }
 
@@ -79,13 +126,13 @@ export class CreepUtils {
     }
 
     public static pickUpEnergy(creep: Creep, target: Resource<RESOURCE_ENERGY>) {
-        if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
+        if (creep.pickup(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
         }
     }
 
     public static withdrawEnergy(creep: Creep, target: Structure<STRUCTURE_STORAGE>) {
-        if(creep.withdraw(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        if (creep.withdraw(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
         }
     }

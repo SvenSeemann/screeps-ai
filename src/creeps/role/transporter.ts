@@ -8,11 +8,20 @@ export class Transporter extends CreepImpl {
     }
 
     run(): void {
-        if(this._creep.store.getFreeCapacity() > 0) {
-            CreepUtils.pickUpDroppedResources(this._creep);
-        }
-        else {
+        if (this._creep.store.getFreeCapacity() > 0) {
+            this.pickupEnergy();
+        } else {
             this.deliverResources();
+        }
+    }
+
+    public pickupEnergy() {
+        let deliverySource = CreepUtils.getNearestDroppedEnergy(this._creep);
+
+        if (!!deliverySource) {
+            CreepUtils.pickUpDroppedResources(this._creep);
+        } else if (this._creep.room.energyAvailable < this._creep.room.energyCapacityAvailable) {
+            CreepUtils.getEnergy(this._creep);
         }
     }
 
@@ -21,7 +30,8 @@ export class Transporter extends CreepImpl {
             STRUCTURE_SPAWN,
             STRUCTURE_EXTENSION,
             STRUCTURE_TOWER,
-            STRUCTURE_CONTAINER
+            STRUCTURE_CONTAINER,
+            STRUCTURE_STORAGE
         ];
         const possibleTargets = this._creep.room.find(FIND_STRUCTURES, {
             filter: (structure: StructureStorage) => {
